@@ -1,206 +1,2155 @@
-<!DOCTYPE html>  <html lang="en">  
-<head>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width,initial-scale=1">  
-<meta name="theme-color" content="#090b10">  
-<title>Study Forge</title>  
-  <link rel="icon" type="image/png" href="file_00000000f11c82119f8298d31670f4ac.png">  
-  <link rel="manifest" href="manifest.json">  
-<style>  
-*{box-sizing:border-box}body{margin:0;background:#090b10;color:#f5f7fb;font-family:Arial,sans-serif}  
-header{padding:22px 18px 10px;position:sticky;top:0;background:#090b10ee;backdrop-filter:blur(12px);z-index:5}  
-h1{margin:0;font-size:28px}h2{margin-top:8px}.sub{color:#9ca3af;font-size:13px}  
-main{max-width:700px;margin:auto;padding:12px 14px 90px}  
-.card{background:#141821;border:1px solid #252b38;border-radius:18px;padding:17px;margin:12px 0}  
-.hero{background:linear-gradient(135deg,#171c2a,#10131b)}  
-.big{font-size:36px;font-weight:bold}.muted{color:#9ca3af}  
-.progress{height:9px;background:#292f3b;border-radius:20px;overflow:hidden}.bar{height:100%;background:#8b7cff;width:0}  
-button,input,select{font:inherit}button{border:0;border-radius:12px;padding:12px 15px;background:#7164ff;color:white;font-weight:bold}  
-button.secondary{background:#252b38}.row{display:flex;gap:9px;align-items:center}.row>*{flex:1}  
-.task{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #252b38}  
-.task:last-child{border:0}.task input{width:21px;height:21px}.done{text-decoration:line-through;color:#777}  
-.nav{position:fixed;bottom:0;left:0;right:0;background:#11141bee;border-top:1px solid #252b38;display:flex;z-index:10;padding:7px}  
-.nav button{flex:1;background:transparent;color:#9ca3af;padding:9px 4px;font-size:11px}  
-.nav button.active{color:white;background:#252b38}  
-.page{display:none}.page.active{display:block}  
-.subject{margin:10px 0}.subject b{display:block;margin-bottom:7px}  
-.badge{display:inline-block;background:#252b38;border-radius:20px;padding:6px 10px;font-size:12px;margin:3px}  
-.quote{font-style:italic;color:#c7c2ff;line-height:1.5}  
-.timer{text-align:center;font-size:64px;font-weight:bold;margin:20px 0}  
-</style>  
-</head>  
-<body>  <header>  
-<h1>⚒️ STUDY FORGE</h1>  
-<div class="sub">Maharashtra SSC • Class 10 • 2027</div>  
-</header>  <main>  <section id="home" class="page active">  
-<div class="card hero">  
-<div class="muted">YOUR MISSION</div>  
-<h2>🎯 Score 90%+</h2>  
-<div class="big" id="percent">0%</div>  
-<div class="progress"><div class="bar" id="bar"></div></div>  
-<p class="muted" id="streak">🔥 Streak: 0 days</p>  
-</div>  <div class="card">  
-<h3>📅 Board Countdown</h3>  
-<div class="big" id="days">--</div>  
-<div class="muted">days remaining</div>  
-</div>  <div class="card">  
-<h3>💬 Forge Quote</h3>  
-<p class="quote" id="quote"></p>  
-</div>  <div class="card">  
-<h3>⚡ Today's Mission</h3>  
-<div id="today"></div>  
-</div>  
-</section>  <section id="tasks" class="page">  
-<div class="card">  
-<h2>✅ Daily Tasks</h2>  
-<div class="row">  
-<input id="newTask" placeholder="Add a study task...">  
-<button onclick="addTask()">Add</button>  
-</div>  
-<div id="taskList"></div>  
-</div>  
-</section>  <section id="syllabus" class="page">  
-<div class="card">  
-<h2>📚 SSC Syllabus</h2>  
-<div id="subjects"></div>  
-</div>  
-</section>  <section id="focus" class="page">  
-<div class="card">  
-<h2>⏱️ Focus Forge</h2>  
-<p class="muted">25-minute deep study session</p>  
-<div class="timer" id="timer">25:00</div>  
-<div class="row">  
-<button onclick="startTimer()">Start</button>  
-<button class="secondary" onclick="resetTimer()">Reset</button>  
-</div>  
-</div>  
-</section>  <section id="stats" class="page">  
-<div class="card">  
-<h2>📊 Your Stats</h2>  
-<h3>XP: <span id="xp">0</span></h3>  
-<p>Level: <b id="level">1</b></p>  
-<p>Completed tasks: <b id="completed">0</b></p>  
-<p>Overall progress: <b id="statPercent">0%</b></p>  
-</div>  
-</section>  </main>  <div class="nav">  
-<button class="active" onclick="show('home',this)">🏠<br>Home</button>  
-<button onclick="show('tasks',this)">✅<br>Tasks</button>  
-<button onclick="show('syllabus',this)">📚<br>Syllabus</button>  
-<button onclick="show('focus',this)">⏱️<br>Focus</button>  
-<button onclick="show('stats',this)">📊<br>Stats</button>  
-</div>  <script>  
-const syllabus={  
-"Maths 1":["Linear Equations","Quadratic Equations","Arithmetic Progression","Financial Planning"],  
-"Maths 2":["Similarity","Pythagoras Theorem","Circle","Coordinate Geometry"],  
-"Science 1":["Gravitation","Periodic Classification","Chemical Reactions","Effects of Electric Current"],  
-"Science 2":["Heredity and Evolution","Life Processes","Environmental Management","Green Energy"],  
-"Geography":["Field Visit","Location and Extent","Physiography and Drainage","Climate"],  
-"History & Political Science":["Historiography","Applied History","Indian Arts","Working of Constitution"],  
-"English":["Grammar","Writing Skills","Reading Skills"],  
-"Hindi":["Grammar","Writing Skills","Literature"],  
-"Marathi":["Grammar","Writing Skills","Literature"]  
-};  
-  
-let data=JSON.parse(localStorage.getItem("studyForge")||'{"tasks":[],"done":[],"xp":0,"completed":0}');  
-const quotes=[  
-"Small progress every day becomes massive progress.",  
-"Forge your discipline before exam day.",  
-"Don't wish for 90%. Build it.",  
-"One chapter today is one less chapter tomorrow.",  
-"Focus now. Celebrate later.",  
-"You don't need motivation. You need momentum."  
-];  
-  
-function save(){localStorage.setItem("studyForge",JSON.stringify(data));render()}  
-  
-function show(id,btn){  
-document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));  
-document.getElementById(id).classList.add("active");  
-document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));  
-btn.classList.add("active");  
-}  
-  
-function addTask(){  
-let x=document.getElementById("newTask").value.trim();  
-if(!x)return;  
-data.tasks.push({text:x,done:false});  
-document.getElementById("newTask").value="";  
-save();  
-}  
-  
-function toggle(i){  
-data.tasks[i].done=!data.tasks[i].done;  
-data.completed=data.tasks.filter(x=>x.done).length;  
-data.xp=data.completed*25;  
-save();  
-}  
-  
-function render(){  
-let total=Object.values(syllabus).flat().length;  
-let progress=Math.round((data.completed/Math.max(total,data.completed))*100);  
-document.getElementById("percent").textContent=progress+"%";  
-document.getElementById("bar").style.width=Math.min(progress,100)+"%";  
-document.getElementById("statPercent").textContent=progress+"%";  
-document.getElementById("xp").textContent=data.xp;  
-document.getElementById("level").textContent=Math.floor(data.xp/100)+1;  
-document.getElementById("completed").textContent=data.completed;  
-  
-let list=document.getElementById("taskList");  
-list.innerHTML="";  
-data.tasks.forEach((t,i)=>{  
-let d=document.createElement("div");  
-d.className="task";  
-d.innerHTML='<input type="checkbox" '+(t.done?'checked':'')+' onchange="toggle('+i+')"><span class="'+(t.done?'done':'')+'">'+escapeHtml(t.text)+'</span>';  
-list.appendChild(d);  
-});  
-  
-let sub=document.getElementById("subjects");  
-sub.innerHTML="";  
-for(let s in syllabus){  
-let box=document.createElement("div");  
-box.className="subject";  
-box.innerHTML="<b>"+s+"</b>"+syllabus[s].map(c=>'<span class="badge">'+c+"</span>").join("");  
-sub.appendChild(box);  
-}  
-document.getElementById("today").innerHTML=data.tasks.length?  
-data.tasks.slice(0,3).map((x,i)=>"• "+escapeHtml(x.text)).join("<br>"):  
-"Add your first task in the Tasks tab.";  
-  
-document.getElementById("quote").textContent=quotes[new Date().getDate()%quotes.length];  
-}  
-  
-function escapeHtml(x){  
-return x.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));  
-}  
-  
-let seconds=1500,interval;  
-function updateTimer(){  
-let m=Math.floor(seconds/60),s=seconds%60;  
-document.getElementById("timer").textContent=  
-String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");  
-}  
-function startTimer(){  
-if(interval)return;  
-interval=setInterval(()=>{  
-seconds--;  
-updateTimer();  
-if(seconds<=0){  
-clearInterval(interval);interval=null;  
-data.xp+=25;save();  
-alert("🔥 Focus session complete! +25 XP");  
-}  
-},1000);  
-}  
-function resetTimer(){  
-clearInterval(interval);interval=null;seconds=1500;updateTimer();  
-}  
-  
-function countdown(){  
-let target=new Date("2027-03-01T00:00:00");  
-let d=Math.max(0,Math.ceil((target-new Date())/86400000));  
-document.getElementById("days").textContent=d;  
-}  
-  
-render();countdown();updateTimer();  
-</script>  </body>  
-  </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090b10">
+<title>Study Forge</title>
+
+<link rel="icon" type="image/png" href="study-forge-logo.png">
+<link rel="manifest" href="manifest.json">
+
+<style>
+*{box-sizing:border-box}
+
+:root{
+  --bg:#090b10;
+  --card:#141821;
+  --card2:#10131b;
+  --border:#252b38;
+  --text:#f5f7fb;
+  --muted:#9ca3af;
+  --accent:#8b7cff;
+  --accent2:#7164ff;
+  --danger:#ef4444;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+  transition:background .3s,color .3s;
+}
+
+header{
+  padding:18px 18px 10px;
+  position:sticky;
+  top:0;
+  background:color-mix(in srgb,var(--bg) 92%,transparent);
+  backdrop-filter:blur(14px);
+  z-index:20;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.header-logo{
+  width:42px;
+  height:42px;
+  object-fit:contain;
+  border-radius:10px;
+}
+
+h1{
+  margin:0;
+  font-size:25px;
+  letter-spacing:.5px;
+}
+
+h2{margin-top:8px}
+
+.sub{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:3px;
+}
+
+main{
+  max-width:700px;
+  margin:auto;
+  padding:10px 14px 100px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:17px;
+  margin:12px 0;
+}
+
+.hero{
+  background:linear-gradient(135deg,var(--card),var(--card2));
+}
+
+.big{
+  font-size:38px;
+  font-weight:bold;
+}
+
+.muted{
+  color:var(--muted);
+}
+
+.progress{
+  height:9px;
+  background:#292f3b;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.bar{
+  height:100%;
+  background:var(--accent);
+  width:0;
+  transition:width .4s ease;
+}
+
+button,input,select{
+  font:inherit;
+}
+
+input,select{
+  width:100%;
+  padding:12px;
+  border-radius:11px;
+  border:1px solid var(--border);
+  background:#0f1219;
+  color:var(--text);
+  outline:none;
+}
+
+input:focus,select:focus{
+  border-color:var(--accent);
+}
+
+button{
+  border:0;
+  border-radius:12px;
+  padding:12px 15px;
+  background:var(--accent2);
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button.secondary{
+  background:#252b38;
+}
+
+button.danger{
+  background:var(--danger);
+}
+
+button.small{
+  padding:8px 10px;
+  font-size:12px;
+}
+
+.row{
+  display:flex;
+  gap:9px;
+  align-items:center;
+}
+
+.row>*{
+  flex:1;
+}
+
+.grid2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.task{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.task:last-child{
+  border:0;
+}
+
+.task input{
+  width:21px;
+  height:21px;
+}
+
+.done{
+  text-decoration:line-through;
+  color:#777;
+}
+
+.nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#11141bee;
+  border-top:1px solid var(--border);
+  display:flex;
+  z-index:50;
+  padding:7px;
+  backdrop-filter:blur(12px);
+}
+
+.nav button{
+  flex:1;
+  background:transparent;
+  color:#9ca3af;
+  padding:8px 3px;
+  font-size:10px;
+}
+
+.nav button.active{
+  color:white;
+  background:#252b38;
+}
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+  animation:pageIn .25s ease;
+}
+
+@keyframes pageIn{
+  from{opacity:0;transform:translateY(5px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.subject{
+  margin:16px 0;
+}
+
+.subject-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+}
+
+.subject b{
+  font-size:16px;
+}
+
+.badge{
+  display:inline-block;
+  background:#252b38;
+  border-radius:20px;
+  padding:7px 10px;
+  font-size:12px;
+  margin:4px 3px 0 0;
+}
+
+.quote{
+  font-style:italic;
+  color:#c7c2ff;
+  line-height:1.6;
+}
+
+.timer{
+  text-align:center;
+  font-size:64px;
+  font-weight:bold;
+  margin:22px 0;
+  letter-spacing:2px;
+}
+
+.timer-mode{
+  text-align:center;
+  color:var(--muted);
+}
+
+.stat{
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:14px;
+}
+
+.stat-number{
+  font-size:25px;
+  font-weight:bold;
+  margin-top:5px;
+}
+
+.setting{
+  padding:15px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.setting:last-child{
+  border:0;
+}
+
+.setting-title{
+  font-weight:bold;
+  margin-bottom:7px;
+}
+
+.theme-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:10px;
+}
+
+.theme-btn{
+  background:#252b38;
+  border:1px solid var(--border);
+  text-align:left;
+}
+
+.theme-btn.selected{
+  border:2px solid var(--accent);
+}
+
+.syllabus-editor{
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:13px;
+  margin-top:10px;
+}
+
+.chapter-row{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin:7px 0;
+}
+
+.chapter-row span{
+  flex:1;
+  font-size:14px;
+}
+
+.empty{
+  color:var(--muted);
+  text-align:center;
+  padding:20px 5px;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:#000b;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+  padding:18px;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  width:100%;
+  max-width:450px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+}
+
+.modal-actions{
+  display:flex;
+  gap:8px;
+  margin-top:14px;
+}
+
+.modal-actions>*{
+  flex:1;
+}
+
+/* SPLASH */
+
+#splash{
+  position:fixed;
+  inset:0;
+  background:var(--bg);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  z-index:9999;
+  opacity:1;
+  visibility:visible;
+  transition:opacity .8s ease,visibility .8s ease;
+}
+
+#splash.hide{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+
+.splash-box{
+  width:90%;
+  max-width:500px;
+}
+
+.splash-logo{
+  width:145px;
+  height:145px;
+  object-fit:contain;
+  opacity:0;
+  transform:translateY(15px) scale(.96);
+  animation:sLogo .9s ease forwards;
+}
+
+.splash-title{
+  font-size:28px;
+  font-weight:900;
+  letter-spacing:2px;
+  margin-top:14px;
+  opacity:0;
+  animation:sTitle .8s .25s ease forwards;
+}
+
+.splash-line{
+  width:60px;
+  height:3px;
+  background:var(--accent);
+  border-radius:10px;
+  margin:17px auto;
+}
+
+#splashQuote{
+  font-size:16px;
+  line-height:1.6;
+  color:#c7c2ff;
+  opacity:0;
+  animation:sQuote 1s .7s ease forwards;
+}
+
+@keyframes sLogo{
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+@keyframes sTitle{
+  to{opacity:1}
+}
+
+@keyframes sQuote{
+  to{opacity:1}
+}
+
+@media(max-width:430px){
+  .grid2{
+    grid-template-columns:1fr;
+  }
+
+  .timer{
+    font-size:52px;
+  }
+
+  .splash-logo{
+    width:125px;
+    height:125px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-box">
+    <img
+      src="study-forge-logo.png"
+      class="splash-logo"
+      alt="Study Forge"
+      onerror="this.style.display='none'"
+    >
+
+    <div class="splash-title">STUDY FORGE</div>
+
+    <div class="splash-line"></div>
+
+    <p id="splashQuote"></p>
+  </div>
+</div>
+
+
+<!-- HEADER -->
+<header>
+  <div class="brand">
+
+    <img
+      src="study-forge-logo.png"
+      class="header-logo"
+      alt="Study Forge"
+      onerror="this.style.display='none'"
+    >
+
+    <div>
+      <h1>STUDY FORGE</h1>
+      <div class="sub" id="headerExam">
+        Maharashtra SSC • Class 10 • 2027
+      </div>
+    </div>
+
+  </div>
+</header>
+
+
+<main>
+
+<!-- HOME -->
+<section id="home" class="page active">
+
+  <div class="card hero">
+    <div class="muted">WELCOME BACK</div>
+    <h2 id="welcomeName">👋 Student</h2>
+    <p class="muted" id="welcomeExam">
+      Build your progress one session at a time.
+    </p>
+  </div>
+
+  <div class="card hero">
+    <div class="muted">YOUR MISSION</div>
+    <h2>🎯 Score 90%+</h2>
+
+    <div class="big" id="percent">0%</div>
+
+    <div class="progress">
+      <div class="bar" id="bar"></div>
+    </div>
+
+    <p class="muted">
+      🔥 <span id="streak">0</span> completed tasks
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>📅 Exam Countdown</h3>
+    <div class="big" id="days">--</div>
+    <div class="muted">days remaining</div>
+    <p class="muted" id="examDateText"></p>
+  </div>
+
+  <div class="card">
+    <h3>💬 Forge Quote</h3>
+    <p class="quote" id="quote"></p>
+  </div>
+
+  <div class="card">
+    <h3>⚡ Today's Mission</h3>
+    <div id="today"></div>
+  </div>
+
+</section>
+
+
+<!-- TASKS -->
+<section id="tasks" class="page">
+
+  <div class="card">
+
+    <h2>✅ Daily Tasks</h2>
+
+    <div class="row">
+      <input id="newTask" placeholder="Add a study task...">
+      <button onclick="addTask()">Add</button>
+    </div>
+
+    <div id="taskList"></div>
+
+  </div>
+
+</section>
+
+
+<!-- SYLLABUS -->
+<section id="syllabus" class="page">
+
+  <div class="card">
+
+    <h2>📚 My Syllabus</h2>
+
+    <p class="muted">
+      Edit your subjects and chapters whenever you want.
+    </p>
+
+    <button onclick="openSubjectModal()">
+      + Add Subject
+    </button>
+
+    <div id="subjects"></div>
+
+  </div>
+
+</section>
+
+
+<!-- FOCUS -->
+<section id="focus" class="page">
+
+  <div class="card">
+
+    <h2>⏱️ Focus Forge</h2>
+
+    <div class="timer-mode" id="timerMode">
+      Deep Focus
+    </div>
+
+    <div class="timer" id="timer">
+      25:00
+    </div>
+
+    <div class="row">
+
+      <button onclick="startTimer()">
+        ▶ Start
+      </button>
+
+      <button
+        class="secondary"
+        onclick="pauseTimer()">
+        ⏸ Pause
+      </button>
+
+    </div>
+
+    <br>
+
+    <div class="row">
+
+      <button
+        class="secondary"
+        onclick="resetTimer()">
+        Reset
+      </button>
+
+      <button
+        class="secondary"
+        onclick="setFocus(50)">
+        50 Min
+      </button>
+
+    </div>
+
+    <br>
+
+    <button
+      class="secondary"
+      style="width:100%"
+      onclick="setFocus(25)">
+      25 Minute Focus
+    </button>
+
+    <p class="muted" style="text-align:center">
+      Completed focus sessions:
+      <b id="focusSessions">0</b>
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- STATS -->
+<section id="stats" class="page">
+
+  <div class="card">
+
+    <h2>📊 Your Progress</h2>
+
+    <div class="grid2">
+
+      <div class="stat">
+        <div class="muted">XP</div>
+        <div class="stat-number" id="xp">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">LEVEL</div>
+        <div class="stat-number" id="level">1</div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">TASKS</div>
+        <div class="stat-number" id="completed">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">PROGRESS</div>
+        <div class="stat-number" id="statPercent">0%</div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">FOCUS</div>
+        <div class="stat-number">
+          <span id="focusMinutes">0</span>m
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">SESSIONS</div>
+        <div class="stat-number" id="statSessions">0</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- SETTINGS -->
+<section id="settings" class="page">
+
+  <div class="card">
+
+    <h2>⚙️ Settings</h2>
+
+    <div class="setting">
+
+      <div class="setting-title">
+        👤 Username
+      </div>
+
+      <input
+        id="usernameInput"
+        placeholder="Your name"
+      >
+
+      <br><br>
+
+      <button onclick="saveUsername()">
+        Save Username
+      </button>
+
+    </div>
+
+
+    <div class="setting">
+
+      <div class="setting-title">
+        🏆 Exam Name
+      </div>
+
+      <input
+        id="examNameInput"
+        placeholder="Exam name"
+      >
+
+    </div>
+
+
+    <div class="setting">
+
+      <div class="setting-title">
+        📅 Exam Date
+      </div>
+
+      <input
+        type="date"
+        id="examDateInput"
+      >
+
+    </div>
+
+
+    <div class="setting">
+
+      <div class="setting-title">
+        🎨 Theme
+      </div>
+
+      <div class="theme-grid">
+
+        <button
+          class="theme-btn"
+          onclick="setTheme('forge')">
+          ⚒️ Forge
+        </button>
+
+        <button
+          class="theme-btn"
+          onclick="setTheme('midnight')">
+          🌌 Midnight
+        </button>
+
+        <button
+          class="theme-btn"
+          onclick="setTheme('violet')">
+          🟣 Violet
+        </button>
+
+        <button
+          class="theme-btn"
+          onclick="setTheme('graphite')">
+          ◼️ Graphite
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="setting">
+
+      <div class="setting-title">
+        💾 Data
+      </div>
+
+      <button
+        class="secondary"
+        onclick="exportData()">
+        Export Backup
+      </button>
+
+      <br><br>
+
+      <button
+        class="danger"
+        onclick="resetAll()">
+        Reset All Data
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<!-- NAV -->
+<div class="nav">
+
+  <button
+    class="active"
+    onclick="show('home',this)">
+    🏠<br>Home
+  </button>
+
+  <button
+    onclick="show('tasks',this)">
+    ✅<br>Tasks
+  </button>
+
+  <button
+    onclick="show('syllabus',this)">
+    📚<br>Syllabus
+  </button>
+
+  <button
+    onclick="show('focus',this)">
+    ⏱️<br>Focus
+  </button>
+
+  <button
+    onclick="show('stats',this)">
+    📊<br>Stats
+  </button>
+
+  <button
+    onclick="show('settings',this)">
+    ⚙️<br>Settings
+  </button>
+
+</div>
+
+
+<!-- SUBJECT MODAL -->
+<div class="modal" id="subjectModal">
+
+  <div class="modal-box">
+
+    <h2 id="subjectModalTitle">
+      Add Subject
+    </h2>
+
+    <input
+      id="subjectName"
+      placeholder="Subject name"
+    >
+
+    <div class="modal-actions">
+
+      <button onclick="saveSubject()">
+        Save
+      </button>
+
+      <button
+        class="secondary"
+        onclick="closeModal()">
+        Cancel
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- CHAPTER MODAL -->
+<div class="modal" id="chapterModal">
+
+  <div class="modal-box">
+
+    <h2>
+      Add Chapter
+    </h2>
+
+    <input
+      id="chapterName"
+      placeholder="Chapter name"
+    >
+
+    <div class="modal-actions">
+
+      <button onclick="saveChapter()">
+        Add
+      </button>
+
+      <button
+        class="secondary"
+        onclick="closeChapterModal()">
+        Cancel
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   DEFAULT SYLLABUS
+   ========================= */
+
+const defaultSyllabus={
+  "Maths 1":[
+    "Linear Equations",
+    "Quadratic Equations",
+    "Arithmetic Progression",
+    "Financial Planning"
+  ],
+
+  "Maths 2":[
+    "Similarity",
+    "Pythagoras Theorem",
+    "Circle",
+    "Coordinate Geometry"
+  ],
+
+  "Science 1":[
+    "Gravitation",
+    "Periodic Classification",
+    "Chemical Reactions",
+    "Effects of Electric Current"
+  ],
+
+  "Science 2":[
+    "Heredity and Evolution",
+    "Life Processes",
+    "Environmental Management",
+    "Green Energy"
+  ],
+
+  "Geography":[
+    "Field Visit",
+    "Location and Extent",
+    "Physiography and Drainage",
+    "Climate"
+  ],
+
+  "History & Political Science":[
+    "Historiography",
+    "Applied History",
+    "Indian Arts",
+    "Working of Constitution"
+  ],
+
+  "English":[
+    "Grammar",
+    "Writing Skills",
+    "Reading Skills"
+  ],
+
+  "Hindi":[
+    "Grammar",
+    "Writing Skills",
+    "Literature"
+  ],
+
+  "Marathi":[
+    "Grammar",
+    "Writing Skills",
+    "Literature"
+  ]
+};
+
+
+/* =========================
+   LOAD DATA
+   ========================= */
+
+let savedData=JSON.parse(
+  localStorage.getItem("studyForgeMax") || "null"
+);
+
+let data=savedData || {
+  tasks:[],
+  xp:0,
+  completed:0,
+  focusSessions:0,
+  focusMinutes:0,
+  syllabus:defaultSyllabus,
+  settings:{
+    username:"",
+    examName:"Maharashtra SSC • Class 10 • 2027",
+    examDate:"2027-03-01",
+    theme:"forge"
+  }
+};
+
+
+/* =========================
+   DAILY QUOTES
+   ========================= */
+
+const dailyQuotes=[
+  "Discipline today creates freedom tomorrow.",
+  "Forge your future one focused session at a time.",
+  "Don't wish for 90%. Build it.",
+  "Small progress every day becomes massive progress.",
+  "One chapter today is one less chapter tomorrow.",
+  "Focus now. Celebrate later.",
+  "You don't need perfect conditions. You need consistent action.",
+  "Your future self is counting on what you do today.",
+  "Consistency beats last-minute pressure.",
+  "Forge discipline. Build knowledge. Shape your future.",
+  "One focused hour can change the direction of your day.",
+  "Progress is built quietly, one session at a time."
+];
+
+
+function getDayOfYear(){
+
+  const now=new Date();
+
+  const start=
+    new Date(now.getFullYear(),0,0);
+
+  return Math.floor(
+    (now-start)/86400000
+  );
+}
+
+
+function getDailyQuote(){
+
+  return dailyQuotes[
+    getDayOfYear()%dailyQuotes.length
+  ];
+
+}
+
+
+/* =========================
+   SAVE
+   ========================= */
+
+function save(){
+
+  localStorage.setItem(
+    "studyForgeMax",
+    JSON.stringify(data)
+  );
+
+  render();
+
+}
+
+
+/* =========================
+   NAVIGATION
+   ========================= */
+
+function show(id,btn){
+
+  document
+    .querySelectorAll(".page")
+    .forEach(x=>x.classList.remove("active"));
+
+  document
+    .getElementById(id)
+    .classList.add("active");
+
+  document
+    .querySelectorAll(".nav button")
+    .forEach(x=>x.classList.remove("active"));
+
+  btn.classList.add("active");
+
+  if(id==="settings"){
+    loadSettings();
+  }
+
+}
+
+
+/* =========================
+   USERNAME
+   ========================= */
+
+function setupUsername(){
+
+  if(data.settings.username){
+    return;
+  }
+
+  const name=prompt(
+    "Welcome to Study Forge ⚒️\n\nWhat should we call you?"
+  );
+
+  if(name && name.trim()){
+
+    data.settings.username=
+      name.trim();
+
+    save();
+
+  }
+
+}
+
+
+function saveUsername(){
+
+  const name=
+    document
+      .getElementById("usernameInput")
+      .value
+      .trim();
+
+  if(!name){
+    alert("Please enter a name.");
+    return;
+  }
+
+  data.settings.username=name;
+
+  save();
+
+  alert("Username saved.");
+
+}
+
+
+/* =========================
+   SETTINGS
+   ========================= */
+
+function loadSettings(){
+
+  document.getElementById(
+    "usernameInput"
+  ).value=
+    data.settings.username || "";
+
+  document.getElementById(
+    "examNameInput"
+  ).value=
+    data.settings.examName || "";
+
+  document.getElementById(
+    "examDateInput"
+  ).value=
+    data.settings.examDate || "";
+
+}
+
+
+document.getElementById(
+  "examNameInput"
+).addEventListener(
+  "change",
+  function(){
+
+    data.settings.examName=
+      this.value.trim() ||
+      "My Exam";
+
+    save();
+
+  }
+);
+
+
+document.getElementById(
+  "examDateInput"
+).addEventListener(
+  "change",
+  function(){
+
+    data.settings.examDate=
+      this.value;
+
+    save();
+
+  }
+);
+
+
+/* =========================
+   THEMES
+   ========================= */
+
+const themes={
+
+  forge:{
+    bg:"#090b10",
+    card:"#141821",
+    card2:"#10131b",
+    border:"#252b38",
+    text:"#f5f7fb",
+    muted:"#9ca3af",
+    accent:"#8b7cff",
+    accent2:"#7164ff"
+  },
+
+  midnight:{
+    bg:"#050812",
+    card:"#0d1422",
+    card2:"#09101c",
+    border:"#1c2b43",
+    text:"#f2f7ff",
+    muted:"#8fa1b8",
+    accent:"#4da3ff",
+    accent2:"#347fd1"
+  },
+
+  violet:{
+    bg:"#0c0712",
+    card:"#181021",
+    card2:"#120b19",
+    border:"#302040",
+    text:"#faf5ff",
+    muted:"#a99bb7",
+    accent:"#b36cff",
+    accent2:"#9145dc"
+  },
+
+  graphite:{
+    bg:"#0c0c0c",
+    card:"#181818",
+    card2:"#121212",
+    border:"#303030",
+    text:"#f4f4f4",
+    muted:"#999",
+    accent:"#b0b0b0",
+    accent2:"#777"
+  }
+
+};
+
+
+function setTheme(name){
+
+  const t=themes[name];
+
+  if(!t)return;
+
+  data.settings.theme=name;
+
+  Object.keys(t).forEach(
+    key=>{
+      document.documentElement.style
+        .setProperty(
+          "--"+key,
+          t[key]
+        );
+    }
+  );
+
+  save();
+
+}
+
+
+function loadTheme(){
+
+  setTheme(
+    data.settings.theme || "forge"
+  );
+
+}
+
+
+/* =========================
+   TASKS
+   ========================= */
+
+function addTask(){
+
+  const input=
+    document.getElementById("newTask");
+
+  const text=
+    input.value.trim();
+
+  if(!text)return;
+
+  data.tasks.push({
+    text:text,
+    done:false
+  });
+
+  input.value="";
+
+  updateCompleted();
+
+  save();
+
+}
+
+
+function toggleTask(index){
+
+  data.tasks[index].done=
+    !data.tasks[index].done;
+
+  updateCompleted();
+
+  save();
+
+}
+
+
+function deleteTask(index){
+
+  if(!confirm("Delete this task?")){
+    return;
+  }
+
+  data.tasks.splice(index,1);
+
+  updateCompleted();
+
+  save();
+
+}
+
+
+function updateCompleted(){
+
+  data.completed=
+    data.tasks.filter(
+      task=>task.done
+    ).length;
+
+  data.xp=
+    data.completed*25
+    +
+    data.focusSessions*25;
+
+}
+
+
+/* =========================
+   SYLLABUS
+   ========================= */
+
+function openSubjectModal(){
+
+  document.getElementById(
+    "subjectName"
+  ).value="";
+
+  document.getElementById(
+    "subjectModal"
+  ).classList.add("show");
+
+}
+
+
+function closeModal(){
+
+  document.getElementById(
+    "subjectModal"
+  ).classList.remove("show");
+
+}
+
+
+function saveSubject(){
+
+  const name=
+    document.getElementById(
+      "subjectName"
+    ).value.trim();
+
+  if(!name)return;
+
+  if(data.syllabus[name]){
+
+    alert("That subject already exists.");
+    return;
+
+  }
+
+  data.syllabus[name]=[];
+
+  closeModal();
+
+  save();
+
+}
+
+
+let selectedSubject="";
+
+
+function openChapterModal(subject){
+
+  selectedSubject=subject;
+
+  document.getElementById(
+    "chapterName"
+  ).value="";
+
+  document.getElementById(
+    "chapterModal"
+  ).classList.add("show");
+
+}
+
+
+function closeChapterModal(){
+
+  document.getElementById(
+    "chapterModal"
+  ).classList.remove("show");
+
+}
+
+
+function saveChapter(){
+
+  const name=
+    document.getElementById(
+      "chapterName"
+    ).value.trim();
+
+  if(!name)return;
+
+  data.syllabus[
+    selectedSubject
+  ].push(name);
+
+  closeChapterModal();
+
+  save();
+
+}
+
+
+function deleteSubject(subject){
+
+  if(!confirm(
+    "Delete "+subject+" and all its chapters?"
+  )){
+    return;
+  }
+
+  delete data.syllabus[subject];
+
+  save();
+
+}
+
+
+function deleteChapter(subject,index){
+
+  data.syllabus[
+    subject
+  ].splice(index,1);
+
+  save();
+
+}
+
+
+function renameSubject(oldName){
+
+  const newName=
+    prompt(
+      "New subject name:",
+      oldName
+    );
+
+  if(!newName ||
+     !newName.trim() ||
+     newName===oldName){
+    return;
+  }
+
+  data.syllabus[newName.trim()]=
+    data.syllabus[oldName];
+
+  delete data.syllabus[oldName];
+
+  save();
+
+}
+
+
+/* =========================
+   FOCUS TIMER
+   ========================= */
+
+let seconds=1500;
+
+let focusInterval=null;
+
+let focusRunning=false;
+
+
+function updateTimer(){
+
+  const minutes=
+    Math.floor(seconds/60);
+
+  const secs=
+    seconds%60;
+
+  document.getElementById(
+    "timer"
+  ).textContent=
+
+    String(minutes)
+      .padStart(2,"0")
+    +
+    ":"
+    +
+    String(secs)
+      .padStart(2,"0");
+
+}
+
+
+function setFocus(minutes){
+
+  pauseTimer();
+
+  seconds=
+    minutes*60;
+
+  document.getElementById(
+    "timerMode"
+  ).textContent=
+    minutes===50
+    ? "Deep Focus"
+    : "Focus Session";
+
+  updateTimer();
+
+}
+
+
+function startTimer(){
+
+  if(focusRunning)return;
+
+  focusRunning=true;
+
+  focusInterval=
+    setInterval(
+      ()=>{
+
+        seconds--;
+
+        updateTimer();
+
+        if(seconds<=0){
+
+          pauseTimer();
+
+          data.focusSessions++;
+
+          data.focusMinutes+=
+            data.settings.lastFocusMinutes || 25;
+
+          updateCompleted();
+
+          save();
+
+          alert(
+            "🔥 Focus session complete! +25 XP"
+          );
+
+          setFocus(25);
+
+        }
+
+      },
+      1000
+    );
+
+}
+
+
+function pauseTimer(){
+
+  if(focusInterval){
+
+    clearInterval(
+      focusInterval
+    );
+
+    focusInterval=null;
+
+  }
+
+  focusRunning=false;
+
+}
+
+
+function resetTimer(){
+
+  pauseTimer();
+
+  seconds=1500;
+
+  document.getElementById(
+    "timerMode"
+  ).textContent=
+    "Deep Focus";
+
+  updateTimer();
+
+}
+
+
+/* =========================
+   COUNTDOWN
+   ========================= */
+
+function countdown(){
+
+  const target=
+    new Date(
+      data.settings.examDate+
+      "T00:00:00"
+    );
+
+  const now=
+    new Date();
+
+  const d=
+    Math.max(
+      0,
+      Math.ceil(
+        (target-now)/
+        86400000
+      )
+    );
+
+  document.getElementById(
+    "days"
+  ).textContent=d;
+
+  const date=
+    new Date(
+      data.settings.examDate+
+      "T00:00:00"
+    );
+
+  document.getElementById(
+    "examDateText"
+  ).textContent=
+    "Exam: "+
+    date.toLocaleDateString(
+      "en-IN",
+      {
+        day:"numeric",
+        month:"long",
+        year:"numeric"
+      }
+    );
+
+}
+
+
+/* =========================
+   ESCAPE HTML
+   ========================= */
+
+function escapeHtml(text){
+
+  return text.replace(
+    /[&<>"']/g,
+    function(m){
+
+      return {
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+      }[m];
+
+    }
+  );
+
+}
+
+
+/* =========================
+   RENDER
+   ========================= */
+
+function render(){
+
+  updateCompleted();
+
+  const allChapters=
+    Object.values(
+      data.syllabus
+    ).flat();
+
+  const total=
+    allChapters.length;
+
+  const progress=
+    total
+    ?
+    Math.round(
+      (data.completed/
+      Math.max(
+        total,
+        data.completed
+      ))*100
+    )
+    :0;
+
+
+  document.getElementById(
+    "percent"
+  ).textContent=
+    progress+"%";
+
+
+  document.getElementById(
+    "bar"
+  ).style.width=
+    Math.min(
+      progress,
+      100
+    )+"%";
+
+
+  document.getElementById(
+    "statPercent"
+  ).textContent=
+    progress+"%";
+
+
+  document.getElementById(
+    "xp"
+  ).textContent=
+    data.xp;
+
+
+  document.getElementById(
+    "level"
+  ).textContent=
+    Math.floor(
+      data.xp/100
+    )+1;
+
+
+  document.getElementById(
+    "completed"
+  ).textContent=
+    data.completed;
+
+
+  document.getElementById(
+    "focusSessions"
+  ).textContent=
+    data.focusSessions;
+
+
+  document.getElementById(
+    "statSessions"
+  ).textContent=
+    data.focusSessions;
+
+
+  document.getElementById(
+    "focusMinutes"
+  ).textContent=
+    data.focusMinutes;
+
+
+  document.getElementById(
+    "streak"
+  ).textContent=
+    data.completed;
+
+
+  /* USER */
+
+  document.getElementById(
+    "welcomeName"
+  ).textContent=
+    "👋 "+
+    (
+      data.settings.username ||
+      "Student"
+    );
+
+
+  document.getElementById(
+    "welcomeExam"
+  ).textContent=
+    data.settings.examName;
+
+
+  /* HEADER */
+
+  document.getElementById(
+    "headerExam"
+  ).textContent=
+    data.settings.examName;
+
+
+  /* QUOTE */
+
+  document.getElementById(
+    "quote"
+  ).textContent=
+    getDailyQuote();
+
+
+  /* TASKS */
+
+  const list=
+    document.getElementById(
+      "taskList"
+    );
+
+  list.innerHTML="";
+
+
+  if(!data.tasks.length){
+
+    list.innerHTML=
+      '<div class="empty">'+
+      'No tasks yet. Add your first study task.'+
+      '</div>';
+
+  }
+
+
+  data.tasks.forEach(
+    (task,index)=>{
+
+      const div=
+        document.createElement(
+          "div"
+        );
+
+      div.className="task";
+
+      div.innerHTML=
+
+        '<input type="checkbox" '+
+        (task.done?"checked":"")+
+        ' onchange="toggleTask('+
+        index+
+        ')">'+
+
+        '<span style="flex:1" class="'+
+        (task.done?"done":"")+
+        '">'+
+        escapeHtml(task.text)+
+        '</span>'+
+
+        '<button class="secondary small" '+
+        'onclick="deleteTask('+
+        index+
+        ')">✕</button>';
+
+      list.appendChild(div);
+
+    }
+  );
+
+
+  /* TODAY */
+
+  document.getElementById(
+    "today"
+  ).innerHTML=
+
+    data.tasks.length
+
+    ?
+
+    data.tasks
+      .filter(x=>!x.done)
+      .slice(0,3)
+      .map(
+        x=>"• "+
+        escapeHtml(x.text)
+      )
+      .join("<br>")
+
+    :
+
+    "Add your first task in the Tasks tab.";
+
+
+  /* SYLLABUS */
+
+  const subjects=
+    document.getElementById(
+      "subjects"
+    );
+
+  subjects.innerHTML="";
+
+
+  Object.keys(
+    data.syllabus
+  ).forEach(
+    subject=>{
+
+      const box=
+        document.createElement(
+          "div"
+        );
+
+      box.className=
+        "syllabus-editor";
+
+
+      let chapters=
+        data.syllabus[subject];
+
+
+      let html=
+
+        '<div class="subject-head">'+
+
+        '<b>'+
+        escapeHtml(subject)+
+        '</b>'+
+
+        '<div>'+
+
+        '<button class="secondary small" '+
+        'onclick="renameSubject(\''+
+        escapeHtml(subject).replace(/'/g,"\\'")+
+        '\')">✎</button>'+
+
+        '<button class="danger small" '+
+        'onclick="deleteSubject(\''+
+        escapeHtml(subject).replace(/'/g,"\\'")+
+        '\')">🗑</button>'+
+
+        '</div>'+
+
+        '</div>';
+
+
+      if(!chapters.length){
+
+        html+=
+          '<p class="empty">No chapters yet.</p>';
+
+      }else{
+
+        chapters.forEach(
+          (chapter,index)=>{
+
+            html+=
+
+              '<div class="chapter-row">'+
+
+              '<span>📖 '+
+              escapeHtml(chapter)+
+              '</span>'+
+
+              '<button class="danger small" '+
+              'onclick="deleteChapter(\''+
+              escapeHtml(subject).replace(/'/g,"\\'")+
+              '\','+
+              index+
+              ')">✕</button>'+
+
+              '</div>';
+
+          }
+        );
+
+      }
+
+
+      html+=
+
+        '<button class="secondary small" '+
+        'onclick="openChapterModal(\''+
+        escapeHtml(subject).replace(/'/g,"\\'")+
+        '\')">'+
+
+        '+ Add Chapter'+
+
+        '</button>';
+
+
+      box.innerHTML=html;
+
+      subjects.appendChild(box);
+
+    }
+  );
+
+
+  countdown();
+
+  updateTimer();
+
+}
+
+
+/* =========================
+   EXPORT BACKUP
+   ========================= */
+
+function exportData(){
+
+  const backup=
+    JSON.stringify(
+      data,
+      null,
+      2
+    );
+
+  const blob=
+    new Blob(
+      [backup],
+      {
+        type:"application/json"
+      }
+    );
+
+  const url=
+    URL.createObjectURL(blob);
+
+  const a=
+    document.createElement("a");
+
+  a.href=url;
+
+  a.download=
+    "study-forge-backup.json";
+
+  a.click();
+
+  URL.revokeObjectURL(url);
+
+}
+
+
+/* =========================
+   RESET
+   ========================= */
+
+function resetAll(){
+
+  const ok=
+    confirm(
+      "This will erase Study Forge settings, tasks, XP and syllabus changes. Continue?"
+    );
+
+  if(!ok)return;
+
+  localStorage.removeItem(
+    "studyForgeMax"
+  );
+
+  location.reload();
+
+}
+
+
+/* =========================
+   SPLASH
+   ========================= */
+
+function startSplash(){
+
+  document.getElementById(
+    "splashQuote"
+  ).textContent=
+    '"'+
+    getDailyQuote()+
+    '"';
+
+
+  setTimeout(
+    ()=>{
+      document
+        .getElementById("splash")
+        .classList.add("hide");
+    },
+    3500
+  );
+
+
+  setTimeout(
+    ()=>{
+      setupUsername();
+    },
+    3900
+  );
+
+}
+
+
+/* =========================
+   START
+   ========================= */
+
+loadTheme();
+
+render();
+
+startSplash();
+
+</script>
+
+</body>
+</html>
