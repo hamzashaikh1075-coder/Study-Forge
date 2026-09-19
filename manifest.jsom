@@ -1,0 +1,15 @@
+{
+  "name": "Study Forge",
+  "short_name": "Study Forge",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#090b10",
+  "theme_color": "#090b10",
+  "icons": [
+    {
+      "src": "file_00000000f11c82119f8298d31670f4ac.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+        }
