@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090b10">
+<title>Study Forge</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#090b10;color:#f5f7fb;font-family:Arial,sans-serif}
+header{padding:22px 18px 10px;position:sticky;top:0;background:#090b10ee;backdrop-filter:blur(12px);z-index:5}
+h1{margin:0;font-size:28px}h2{margin-top:8px}.sub{color:#9ca3af;font-size:13px}
+main{max-width:700px;margin:auto;padding:12px 14px 90px}
+.card{background:#141821;border:1px solid #252b38;border-radius:18px;padding:17px;margin:12px 0}
+.hero{background:linear-gradient(135deg,#171c2a,#10131b)}
+.big{font-size:36px;font-weight:bold}.muted{color:#9ca3af}
+.progress{height:9px;background:#292f3b;border-radius:20px;overflow:hidden}.bar{height:100%;background:#8b7cff;width:0}
+button,input,select{font:inherit}button{border:0;border-radius:12px;padding:12px 15px;background:#7164ff;color:white;font-weight:bold}
+button.secondary{background:#252b38}.row{display:flex;gap:9px;align-items:center}.row>*{flex:1}
+.task{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #252b38}
+.task:last-child{border:0}.task input{width:21px;height:21px}.done{text-decoration:line-through;color:#777}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#11141bee;border-top:1px solid #252b38;display:flex;z-index:10;padding:7px}
+.nav button{flex:1;background:transparent;color:#9ca3af;padding:9px 4px;font-size:11px}
+.nav button.active{color:white;background:#252b38}
+.page{display:none}.page.active{display:block}
+.subject{margin:10px 0}.subject b{display:block;margin-bottom:7px}
+.badge{display:inline-block;background:#252b38;border-radius:20px;padding:6px 10px;font-size:12px;margin:3px}
+.quote{font-style:italic;color:#c7c2ff;line-height:1.5}
+.timer{text-align:center;font-size:64px;font-weight:bold;margin:20px 0}
+</style>
+</head>
+<body>
+
+<header>
+<h1>⚒️ STUDY FORGE</h1>
+<div class="sub">Maharashtra SSC • Class 10 • 2027</div>
+</header>
+
+<main>
+
+<section id="home" class="page active">
+<div class="card hero">
+<div class="muted">YOUR MISSION</div>
+<h2>🎯 Score 90%+</h2>
+<div class="big" id="percent">0%</div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<p class="muted" id="streak">🔥 Streak: 0 days</p>
+</div>
+
+<div class="card">
+<h3>📅 Board Countdown</h3>
+<div class="big" id="days">--</div>
+<div class="muted">days remaining</div>
+</div>
+
+<div class="card">
+<h3>💬 Forge Quote</h3>
+<p class="quote" id="quote"></p>
+</div>
+
+<div class="card">
+<h3>⚡ Today's Mission</h3>
+<div id="today"></div>
+</div>
+</section>
+
+<section id="tasks" class="page">
+<div class="card">
+<h2>✅ Daily Tasks</h2>
+<div class="row">
+<input id="newTask" placeholder="Add a study task...">
+<button onclick="addTask()">Add</button>
+</div>
+<div id="taskList"></div>
+</div>
+</section>
+
+<section id="syllabus" class="page">
+<div class="card">
+<h2>📚 SSC Syllabus</h2>
+<div id="subjects"></div>
+</div>
+</section>
+
+<section id="focus" class="page">
+<div class="card">
+<h2>⏱️ Focus Forge</h2>
+<p class="muted">25-minute deep study session</p>
+<div class="timer" id="timer">25:00</div>
+<div class="row">
+<button onclick="startTimer()">Start</button>
+<button class="secondary" onclick="resetTimer()">Reset</button>
+</div>
+</div>
+</section>
+
+<section id="stats" class="page">
+<div class="card">
+<h2>📊 Your Stats</h2>
+<h3>XP: <span id="xp">0</span></h3>
+<p>Level: <b id="level">1</b></p>
+<p>Completed tasks: <b id="completed">0</b></p>
+<p>Overall progress: <b id="statPercent">0%</b></p>
+</div>
+</section>
+
+</main>
+
+<div class="nav">
+<button class="active" onclick="show('home',this)">🏠<br>Home</button>
+<button onclick="show('tasks',this)">✅<br>Tasks</button>
+<button onclick="show('syllabus',this)">📚<br>Syllabus</button>
+<button onclick="show('focus',this)">⏱️<br>Focus</button>
+<button onclick="show('stats',this)">📊<br>Stats</button>
+</div>
+
+<script>
+const syllabus={
+"Maths 1":["Linear Equations","Quadratic Equations","Arithmetic Progression","Financial Planning"],
+"Maths 2":["Similarity","Pythagoras Theorem","Circle","Coordinate Geometry"],
+"Science 1":["Gravitation","Periodic Classification","Chemical Reactions","Effects of Electric Current"],
+"Science 2":["Heredity and Evolution","Life Processes","Environmental Management","Green Energy"],
+"Geography":["Field Visit","Location and Extent","Physiography and Drainage","Climate"],
+"History & Political Science":["Historiography","Applied History","Indian Arts","Working of Constitution"],
+"English":["Grammar","Writing Skills","Reading Skills"],
+"Hindi":["Grammar","Writing Skills","Literature"],
+"Marathi":["Grammar","Writing Skills","Literature"]
+};
+
+let data=JSON.parse(localStorage.getItem("studyForge")||'{"tasks":[],"done":[],"xp":0,"completed":0}');
+const quotes=[
+"Small progress every day becomes massive progress.",
+"Forge your discipline before exam day.",
+"Don't wish for 90%. Build it.",
+"One chapter today is one less chapter tomorrow.",
+"Focus now. Celebrate later.",
+"You don't need motivation. You need momentum."
+];
+
+function save(){localStorage.setItem("studyForge",JSON.stringify(data));render()}
+
+function show(id,btn){
+document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));
+btn.classList.add("active");
+}
+
+function addTask(){
+let x=document.getElementById("newTask").value.trim();
+if(!x)return;
+data.tasks.push({text:x,done:false});
+document.getElementById("newTask").value="";
+save();
+}
+
+function toggle(i){
+data.tasks[i].done=!data.tasks[i].done;
+data.completed=data.tasks.filter(x=>x.done).length;
+data.xp=data.completed*25;
+save();
+}
+
+function render(){
+let total=Object.values(syllabus).flat().length;
+let progress=Math.round((data.completed/Math.max(total,data.completed))*100);
+document.getElementById("percent").textContent=progress+"%";
+document.getElementById("bar").style.width=Math.min(progress,100)+"%";
+document.getElementById("statPercent").textContent=progress+"%";
+document.getElementById("xp").textContent=data.xp;
+document.getElementById("level").textContent=Math.floor(data.xp/100)+1;
+document.getElementById("completed").textContent=data.completed;
+
+let list=document.getElementById("taskList");
+list.innerHTML="";
+data.tasks.forEach((t,i)=>{
+let d=document.createElement("div");
+d.className="task";
+d.innerHTML='<input type="checkbox" '+(t.done?'checked':'')+' onchange="toggle('+i+')"><span class="'+(t.done?'done':'')+'">'+escapeHtml(t.text)+'</span>';
+list.appendChild(d);
+});
+
+let sub=document.getElementById("subjects");
+sub.innerHTML="";
+for(let s in syllabus){
+let box=document.createElement("div");
+box.className="subject";
+box.innerHTML="<b>"+s+"</b>"+syllabus[s].map(c=>'<span class="badge">'+c+"</span>").join("");
+sub.appendChild(box);
+}
+document.getElementById("today").innerHTML=data.tasks.length?
+data.tasks.slice(0,3).map((x,i)=>"• "+escapeHtml(x.text)).join("<br>"):
+"Add your first task in the Tasks tab.";
+
+document.getElementById("quote").textContent=quotes[new Date().getDate()%quotes.length];
+}
+
+function escapeHtml(x){
+return x.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+
+let seconds=1500,interval;
+function updateTimer(){
+let m=Math.floor(seconds/60),s=seconds%60;
+document.getElementById("timer").textContent=
+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+function startTimer(){
+if(interval)return;
+interval=setInterval(()=>{
+seconds--;
+updateTimer();
+if(seconds<=0){
+clearInterval(interval);interval=null;
+data.xp+=25;save();
+alert("🔥 Focus session complete! +25 XP");
+}
+},1000);
+}
+function resetTimer(){
+clearInterval(interval);interval=null;seconds=1500;updateTimer();
+}
+
+function countdown(){
+let target=new Date("2027-03-01T00:00:00");
+let d=Math.max(0,Math.ceil((target-new Date())/86400000));
+document.getElementById("days").textContent=d;
+}
+
+render();countdown();updateTimer();
+</script>
+</body>
+  </html>
