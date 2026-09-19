@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Study Forge</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#0b0f18;
+ color:white;
+ min-height:100vh;
+}
+
+.app{
+ max-width:500px;
+ margin:auto;
+ min-height:100vh;
+ padding-bottom:80px;
+}
+
+header{
+ padding:25px 20px 10px;
+}
+
+.logo{
+ font-size:30px;
+ font-weight:800;
+}
+
+.sub{
+ color:#8d96a8;
+ margin-top:5px;
+}
+
+.screen{
+ display:none;
+ padding:15px 20px;
+}
+
+.screen.active{
+ display:block;
+}
+
+.card{
+ background:#151b28;
+ border-radius:20px;
+ padding:20px;
+ margin-bottom:15px;
+ border:1px solid #252d3d;
+}
+
+.quote{
+ font-size:20px;
+ line-height:1.45;
+ text-align:center;
+ font-weight:bold;
+}
+
+.count{
+ text-align:center;
+ font-size:32px;
+ font-weight:800;
+ margin:12px 0;
+}
+
+label{
+ display:block;
+ margin-top:12px;
+ color:#aeb7c8;
+}
+
+input,textarea,select{
+ width:100%;
+ padding:13px;
+ margin-top:7px;
+ border:0;
+ border-radius:12px;
+ background:#252d3d;
+ color:white;
+ font-size:16px;
+}
+
+button{
+ width:100%;
+ border:0;
+ padding:13px;
+ margin-top:10px;
+ border-radius:12px;
+ background:#4d7cff;
+ color:white;
+ font-size:16px;
+ font-weight:bold;
+}
+
+button:active{
+ transform:scale(.97);
+}
+
+.result{
+ text-align:center;
+ font-size:20px;
+ font-weight:bold;
+ margin-top:15px;
+}
+
+.subject{
+ background:#202837;
+ padding:15px;
+ border-radius:15px;
+ margin-top:10px;
+}
+
+.bottom{
+ position:fixed;
+ bottom:0;
+ left:50%;
+ transform:translateX(-50%);
+ width:100%;
+ max-width:500px;
+ height:72px;
+ background:#111722;
+ border-top:1px solid #293143;
+ display:flex;
+ justify-content:space-around;
+ align-items:center;
+ z-index:10;
+}
+
+.nav{
+ background:none;
+ margin:0;
+ padding:7px;
+ color:#8791a5;
+ font-size:12px;
+}
+
+.nav span{
+ display:block;
+ font-size:23px;
+}
+
+.nav.active{
+ color:#5d87ff;
+}
+
+.title{
+ font-size:26px;
+ margin:5px 0 18px;
+}
+
+.small{
+ color:#8993a5;
+ font-size:13px;
+}
+
+.danger{
+ background:#d64747;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+ <div class="logo">⚡ Study Forge</div>
+ <div class="sub">Forge your future. One chapter at a time.</div>
+</header>
+
+
+<!-- HOME -->
+
+<section id="home" class="screen active">
+
+ <h2 class="title">🏠 Home</h2>
+
+ <div class="card">
+  <div class="quote" id="quote">
+   Loading motivation...
+  </div>
+ </div>
+
+ <div class="card">
+  <h3>📅 Exam Countdown</h3>
+
+  <div class="count" id="countdown">
+   Set exam date
+  </div>
+
+  <div class="small">
+   Your saved exam date
+  </div>
+ </div>
+
+ <div class="card">
+  <h3>🔥 Daily Mission</h3>
+  <p>Study with focus. Complete one target at a time.</p>
+ </div>
+
+</section>
+
+
+<!-- SYLLABUS -->
+
+<section id="syllabus" class="screen">
+
+ <h2 class="title">📚 Syllabus</h2>
+
+ <div class="card">
+
+  <label>Subject</label>
+  <input id="subject" placeholder="Example: Mathematics 1">
+
+  <label>Topics / Chapters</label>
+
+  <textarea id="topics"
+   placeholder="Write one chapter per line"></textarea>
+
+  <button onclick="addSubject()">
+   ➕ Add Subject
+  </button>
+
+ </div>
+
+ <div id="syllabusList"></div>
+
+</section>
+
+
+<!-- CALCULATOR -->
+
+<section id="calculator" class="screen">
+
+ <h2 class="title">🧮 Calculator</h2>
+
+ <div class="card">
+
+  <h3>📖 Chapter Calculator</h3>
+
+  <label>Chapters remaining</label>
+  <input id="chapters" type="number">
+
+  <label>Days remaining</label>
+  <input id="days" type="number">
+
+  <button onclick="chapterCalc()">
+   Calculate
+  </button>
+
+  <div id="chapterResult" class="result"></div>
+
+ </div>
+
+
+ <div class="card">
+
+  <h3>📝 Question Calculator</h3>
+
+  <label>Questions remaining</label>
+  <input id="questions" type="number">
+
+  <label>Days remaining</label>
+  <input id="questionDays" type="number">
+
+  <button onclick="questionCalc()">
+   Calculate
+  </button>
+
+  <div id="questionResult" class="result"></div>
+
+ </div>
+
+</section>
+
+
+<!-- SETTINGS -->
+
+<section id="settings" class="screen">
+
+ <h2 class="title">⚙️ Settings</h2>
+
+ <div class="card">
+
+  <h3>📅 Exam Date</h3>
+
+  <input id="examDate" type="date">
+
+  <button onclick="saveDate()">
+   💾 Save Exam Date
+  </button>
+
+ </div>
+
+
+ <div class="card">
+
+  <h3>🎨 App Theme</h3>
+
+  <select id="theme" onchange="setTheme()">
+   <option value="dark">Dark</option>
+   <option value="blue">Blue</option>
+   <option value="purple">Purple</option>
+   <option value="green">Green</option>
+   <option value="light">Light</option>
+  </select>
+
+ </div>
+
+
+ <div class="card">
+
+  <h3>🔄 Reset</h3>
+
+  <button class="danger" onclick="resetApp()">
+   Reset Study Forge
+  </button>
+
+ </div>
+
+</section>
+
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottom">
+
+ <button class="nav active" onclick="openScreen('home',this)">
+  <span>🏠</span>
+  Home
+ </button>
+
+ <button class="nav" onclick="openScreen('syllabus',this)">
+  <span>📚</span>
+  Syllabus
+ </button>
+
+ <button class="nav" onclick="openScreen('calculator',this)">
+  <span>🧮</span>
+  Calculator
+ </button>
+
+ <button class="nav" onclick="openScreen('settings',this)">
+  <span>⚙️</span>
+  Settings
+ </button>
+
+</nav>
+
+</div>
+
+
+<script>
+
+/* QUOTES */
+
+const quotes=[
+"Discipline beats motivation.",
+"Your future self is watching what you do today.",
+"One chapter today is one less chapter tomorrow.",
+"Small progress every day becomes massive progress.",
+"Don't wait for motivation. Start.",
+"Study now. Relax later.",
+"You don't need to be perfect. You need to be consistent.",
+"Every question you solve makes you stronger.",
+"Focus on the next chapter, not the whole mountain.",
+"Hard work today creates confidence tomorrow.",
+"No excuses. Just progress.",
+"Open the book. Start the mission.",
+"Eden Protocol: ACTIVE. 🔥"
+];
+
+function randomQuote(){
+
+ let q=quotes[Math.floor(Math.random()*quotes.length)];
+
+ document.getElementById("quote").textContent="“"+q+"”";
+}
+
+
+/* NAVIGATION */
+
+function openScreen(id,button){
+
+ document.querySelectorAll(".screen")
+ .forEach(s=>s.classList.remove("active"));
+
+ document.getElementById(id)
+ .classList.add("active");
+
+ document.querySelectorAll(".nav")
+ .forEach(n=>n.classList.remove("active"));
+
+ button.classList.add("active");
+
+ window.scrollTo(0,0);
+}
+
+
+/* EXAM DATE */
+
+function saveDate(){
+
+ let date=document.getElementById("examDate").value;
+
+ if(!date){
+  alert("Select an exam date first.");
+  return;
+ }
+
+ localStorage.setItem("examDate",date);
+
+ updateCountdown();
+
+ alert("Exam date saved! 🔥");
+}
+
+
+function updateCountdown(){
+
+ let date=localStorage.getItem("examDate");
+
+ if(!date){
+  document.getElementById("countdown").textContent=
+  "Set exam date";
+  return;
+ }
+
+ document.getElementById("examDate").value=date;
+
+ let exam=new Date(date+"T00:00:00");
+
+ let today=new Date();
+
+ today.setHours(0,0,0,0);
+
+ let days=Math.ceil(
+  (exam-today)/(1000*60*60*24)
+ );
+
+ if(days>0){
+
+  document.getElementById("countdown").textContent=
+  days+" DAYS LEFT 🔥";
+
+ }else if(days===0){
+
+  document.getElementById("countdown").textContent=
+  "EXAM IS TODAY! 🚀";
+
+ }else{
+
+  document.getElementById("countdown").textContent=
+  "EXAM DATE PASSED";
+
+ }
+}
+
+
+/* CHAPTER CALCULATOR */
+
+function chapterCalc(){
+
+ let chapters=Number(
+  document.getElementById("chapters").value
+ );
+
+ let days=Number(
+  document.getElementById("days").value
+ );
+
+ if(chapters<=0||days<=0){
+
+  document.getElementById("chapterResult").textContent=
+  "Enter valid numbers.";
+
+  return;
+ }
+
+ let result=Math.ceil(chapters/days);
+
+ document.getElementById("chapterResult").textContent=
+ "🎯 "+result+" chapter(s) per day";
+}
+
+
+/* QUESTION CALCULATOR */
+
+function questionCalc(){
+
+ let questions=Number(
+  document.getElementById("questions").value
+ );
+
+ let days=Number(
+  document.getElementById("questionDays").value
+ );
+
+ if(questions<=0||days<=0){
+
+  document.getElementById("questionResult").textContent=
+  "Enter valid numbers.";
+
+  return;
+ }
+
+ let result=Math.ceil(questions/days);
+
+ document.getElementById("questionResult").textContent=
+ "📝 "+result+" question(s) per day";
+}
+
+
+/* SYLLABUS */
+
+function addSubject(){
+
+ let subject=
+ document.getElementById("subject").value.trim();
+
+ let topics=
+ document.getElementById("topics").value.trim();
+
+ if(!subject||!topics){
+
+  alert("Enter subject and chapters.");
+
+  return;
+ }
+
+ let data=JSON.parse(
+ localStorage.getItem("syllabus")||"[]"
+ );
+
+ data.push({
+  subject:subject,
+  topics:topics.split("\n")
+ });
+
+ localStorage.setItem(
+ "syllabus",
+ JSON.stringify(data)
+ );
+
+ document.getElementById("subject").value="";
+ document.getElementById("topics").value="";
+
+ showSyllabus();
+}
+
+
+function showSyllabus(){
+
+ let list=document.getElementById("syllabusList");
+
+ let data=JSON.parse(
+ localStorage.getItem("syllabus")||"[]"
+ );
+
+ list.innerHTML="";
+
+ data.forEach((item,index)=>{
+
+  let div=document.createElement("div");
+
+  div.className="subject";
+
+  div.innerHTML=
+  "<h3>📖 "+item.subject+"</h3>"+
+  item.topics.map(x=>"• "+x).join("<br>")+
+  "<button class='danger' onclick='deleteSubject("+index+")'>Delete</button>";
+
+  list.appendChild(div);
+
+ });
+}
+
+
+function deleteSubject(index){
+
+ let data=JSON.parse(
+ localStorage.getItem("syllabus")||"[]"
+ );
+
+ data.splice(index,1);
+
+ localStorage.setItem(
+ "syllabus",
+ JSON.stringify(data)
+ );
+
+ showSyllabus();
+}
+
+
+/* THEMES */
+
+function setTheme(){
+
+ let theme=
+ document.getElementById("theme").value;
+
+ localStorage.setItem("theme",theme);
+
+ applyTheme(theme);
+}
+
+
+function applyTheme(theme){
+
+ if(theme==="dark")
+ document.body.style.background="#0b0f18";
+
+ if(theme==="blue")
+ document.body.style.background="#071a33";
+
+ if(theme==="purple")
+ document.body.style.background="#1b0b2e";
+
+ if(theme==="green")
+ document.body.style.background="#061f17";
+
+ if(theme==="light")
+ document.body.style.background="#eeeeee";
+}
+
+
+/* RESET */
+
+function resetApp(){
+
+ if(!confirm("Reset all Study Forge data?"))
+ return;
+
+ localStorage.clear();
+
+ location.reload();
+}
+
+
+/* START */
+
+randomQuote();
+
+showSyllabus();
+
+updateCountdown();
+
+let savedTheme=
+localStorage.getItem("theme")||"dark";
+
+document.getElementById("theme").value=savedTheme;
+
+applyTheme(savedTheme);
+
+setInterval(updateCountdown,60000);
+
+</script>
+
+</body>
+</html>
