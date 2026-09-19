@@ -1,1 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b10">
 
+<title>Study Forge</title>
+
+<link rel="icon" href="file_00000000f11c82119f8298d31670f4ac.png">
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#090b10;
+  color:#fff;
+  min-height:100vh;
+  transition:.3s;
+}
+
+button,input,select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.app{
+  max-width:700px;
+  margin:auto;
+  min-height:100vh;
+  padding-bottom:90px;
+}
+
+/* SPLASH */
+
+#splash{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:#080a0f;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  animation:splashOut 1s ease 4s forwards;
+}
+
+.splashLogo{
+  width:110px;
+  height:110px;
+  object-fit:contain;
+  margin-bottom:25px;
+  animation:logoIn 1s ease;
+}
+
+.splashTitle{
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+.splashQuote{
+  max-width:330px;
+  margin-top:22px;
+  font-size:18px;
+  line-height:1.5;
+  opacity:0;
+  animation:quoteInOut 3.5s ease forwards;
+}
+
+@keyframes logoIn{
+  from{
+    opacity:0;
+    transform:scale(.5);
+  }
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+@keyframes quoteInOut{
+  0%{opacity:0;transform:translateY(15px)}
+  20%{opacity:1;transform:translateY(0)}
+  75%{opacity:1}
+  100%{opacity:0;transform:translateY(-10px)}
+}
+
+@keyframes splashOut{
+  to{
+    opacity:0;
+    visibility:hidden;
+  }
+}
+
+/* HEADER */
+
+header{
+  padding:25px 18px 15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logoText{
+  font-size:23px;
+  font-weight:900;
+}
+
+.subtitle{
+  color:#9ca3af;
+  font-size:12px;
+  margin-top:4px;
+}
+
+.profileBtn{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  border:2px solid #fff;
+  overflow:hidden;
+  background:#1c2330;
+}
+
+.profileBtn img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* PAGES */
+
+.page{
+  display:none;
+  padding:10px 16px;
+}
+
+.page.active{
+  display:block;
+}
+
+.card{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:15px;
+  backdrop-filter:blur(10px);
+}
+
+.card h2{
+  font-size:18px;
+  margin-bottom:10px;
+}
+
+.card h3{
+  margin-bottom:8px;
+}
+
+.muted{
+  color:#9ca3af;
+}
+
+.big{
+  font-size:32px;
+  font-weight:900;
+}
+
+.progressBar{
+  height:10px;
+  background:#202631;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:12px;
+}
+
+.progressFill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#7c3aed,#06b6d4);
+  transition:.4s;
+}
+
+/* BUTTONS */
+
+.btn{
+  border:none;
+  border-radius:12px;
+  padding:11px 15px;
+  background:#fff;
+  color:#090b10;
+  font-weight:700;
+  margin-top:8px;
+}
+
+.btn.secondary{
+  background:#202631;
+  color:#fff;
+}
+
+.btn.danger{
+  background:#7f1d1d;
+  color:#fff;
+}
+
+.btn.full{
+  width:100%;
+}
+
+/* INPUTS */
+
+input,select{
+  width:100%;
+  background:#11151d;
+  border:1px solid #303744;
+  color:#fff;
+  border-radius:11px;
+  padding:12px;
+  margin:6px 0;
+  outline:none;
+}
+
+input:focus,select:focus{
+  border-color:#8b5cf6;
+}
+
+/* TASKS */
+
+.task{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+
+.task:last-child{
+  border-bottom:none;
+}
+
+.task input{
+  width:20px;
+  height:20px;
+  margin:0;
+}
+
+.task.done span{
+  text-decoration:line-through;
+  color:#777;
+}
+
+/* SYLLABUS */
+
+.subject{
+  margin-bottom:12px;
+}
+
+.subjectHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:7px;
+}
+
+.chapter{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px;
+  background:rgba(255,255,255,.04);
+  border-radius:9px;
+  margin:5px 0;
+}
+
+.chapter input{
+  width:19px;
+  height:19px;
+  margin:0;
+}
+
+/* TIMER */
+
+.timer{
+  text-align:center;
+  padding:25px 10px;
+}
+
+.timerTime{
+  font-size:65px;
+  font-weight:900;
+  letter-spacing:3px;
+  margin:20px 0;
+}
+
+.timerButtons{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+/* STATS */
+
+.statGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.stat{
+  padding:18px;
+  border-radius:15px;
+  background:rgba(255,255,255,.05);
+}
+
+.statNumber{
+  font-size:27px;
+  font-weight:900;
+}
+
+/* NAV */
+
+.bottomNav{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(700px,100%);
+  height:70px;
+  background:rgba(10,12,18,.96);
+  border-top:1px solid #252b35;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  z-index:100;
+}
+
+.navBtn{
+  border:none;
+  background:none;
+  color:#777;
+  font-size:11px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+}
+
+.navBtn span{
+  font-size:21px;
+}
+
+.navBtn.active{
+  color:#fff;
+}
+
+/* SETTINGS */
+
+.avatarPreview{
+  width:85px;
+  height:85px;
+  border-radius:50%;
+  object-fit:cover;
+  display:block;
+  margin:10px auto;
+  border:2px solid #fff;
+}
+
+.colorRow{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:8px;
+}
+
+.colorBtn{
+  width:42px;
+  height:42px;
+  border-radius:10px;
+  border:2px solid #fff;
+}
+
+.quoteBox{
+  font-size:18px;
+  line-height:1.5;
+  font-weight:600;
+}
+
+.small{
+  font-size:12px;
+}
+
+.center{
+  text-align:center;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:450px){
+  .timerTime{
+    font-size:50px;
+  }
+
+  .big{
+    font-size:27px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SPLASH -->
+
+<div id="splash">
+
+  <img
+    class="splashLogo"
+    src="study-forge-logo.png"
+    onerror="this.style.display='none'"
+  >
+
+  <div class="splashTitle">⚒️ STUDY FORGE</div>
+
+  <div id="splashQuote" class="splashQuote"></div>
+
+</div>
+
+<div class="app">
+
+<header>
+
+  <div>
+    <div class="logoText">⚒️ STUDY FORGE</div>
+    <div class="subtitle">
+      Maharashtra SSC • Class 10 • 2027
+    </div>
+  </div>
+
+  <button class="profileBtn" onclick="showPage('settings')">
+    <img id="headerAvatar"
+      src=""
+      onerror="this.style.display='none'">
+  </button>
+
+</header>
+
+
+<!-- HOME -->
+
+<section id="home" class="page active">
+
+  <div class="card">
+    <div class="muted">Welcome back</div>
+    <h1 id="welcomeName">Student</h1>
+
+    <p class="muted">
+      Your mission is simple: build your preparation every day.
+    </p>
+  </div>
+
+  <div class="card">
+
+    <h2 id="examNameHome">
+      Maharashtra SSC Board Exam
+    </h2>
+
+    <div class="muted">
+      Days remaining
+    </div>
+
+    <div class="big" id="countdown">
+      0
+    </div>
+
+    <div class="progressBar">
+      <div id="overallProgress"
+           class="progressFill"></div>
+    </div>
+
+    <p class="muted small" id="progressText">
+      0% completed
+    </p>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>🔥 Forge Quote</h2>
+
+    <div id="homeQuote"
+         class="quoteBox">
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>🎯 Today's Mission</h2>
+
+    <div id="todayMission">
+      No mission yet.
+    </div>
+
+    <button class="btn full"
+      onclick="showPage('tasks')">
+      Open Tasks
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- TASKS -->
+
+<section id="tasks" class="page">
+
+  <div class="card">
+
+    <h2>🎯 Study Tasks</h2>
+
+    <input
+      id="taskInput"
+      placeholder="Enter a study task..."
+    >
+
+    <button class="btn full"
+      onclick="addTask()">
+      + Add Task
+    </button>
+
+  </div>
+
+  <div class="card">
+
+    <div id="taskList"></div>
+
+  </div>
+
+</section>
+
+
+<!-- SYLLABUS -->
+
+<section id="syllabus" class="page">
+
+  <div class="card">
+
+    <h2>📚 My Syllabus</h2>
+
+    <p class="muted">
+      Tick chapters as you complete them.
+    </p>
+
+    <button class="btn secondary"
+      onclick="addSubject()">
+      + Add Subject
+    </button>
+
+  </div>
+
+  <div id="syllabusList"></div>
+
+</section>
+
+
+<!-- FOCUS -->
+
+<section id="focus" class="page">
+
+  <div class="card timer">
+
+    <h2>⏱️ Focus Forge</h2>
+
+    <p class="muted">
+      Choose your focus session.
+    </p>
+
+    <div class="timerTime"
+      id="timerDisplay">
+      25:00
+    </div>
+
+    <div class="timerButtons">
+
+      <button class="btn"
+        onclick="setTimer(25)">
+        25 min
+      </button>
+
+      <button class="btn"
+        onclick="setTimer(50)">
+        50 min
+      </button>
+
+      <button class="btn"
+        onclick="setTimer(90)">
+        90 min
+      </button>
+
+    </div>
+
+    <br>
+
+    <button class="btn"
+      onclick="startTimer()">
+      ▶ Start
+    </button>
+
+    <button class="btn secondary"
+      onclick="pauseTimer()">
+      ⏸ Pause
+    </button>
+
+    <button class="btn secondary"
+      onclick="resetTimer()">
+      ↻ Reset
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- STATS -->
+
+<section id="stats" class="page">
+
+  <div class="card">
+
+    <h2>📊 Your Forge Stats</h2>
+
+    <div class="statGrid">
+
+      <div class="stat">
+        <div class="muted">XP</div>
+        <div id="xpStat"
+          class="statNumber">
+          0
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">Level</div>
+        <div id="levelStat"
+          class="statNumber">
+          1
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">Tasks</div>
+        <div id="taskStat"
+          class="statNumber">
+          0
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">Chapters</div>
+        <div id="chapterStat"
+          class="statNumber">
+          0
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- SETTINGS -->
+
+<section id="settings" class="page">
+
+  <div class="card">
+
+    <h2>⚙️ Study Forge Settings</h2>
+
+    <h3>👤 Profile</h3>
+
+    <img id="avatarPreview"
+      class="avatarPreview"
+      src=""
+      onerror="this.style.display='none'">
+
+    <input
+      id="usernameInput"
+      placeholder="Your name"
+    >
+
+    <input
+      id="avatarInput"
+      type="file"
+      accept="image/*"
+      onchange="changeAvatar(event)"
+    >
+
+    <button class="btn full"
+      onclick="saveProfile()">
+      Save Profile
+    </button>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>📅 Exam</h3>
+
+    <input
+      id="examNameInput"
+      placeholder="Exam name"
+    >
+
+    <input
+      id="examDateInput"
+      type="date"
+    >
+
+    <button class="btn full"
+      onclick="saveExam()">
+      Save Exam
+    </button>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>🎨 Themes</h3>
+
+    <select id="themeSelect"
+      onchange="changeTheme(this.value)">
+
+      <option value="forge">Forge Dark</option>
+      <option value="white">Bright White</option>
+      <option value="grey">Grey Focus</option>
+      <option value="midnight">Midnight</option>
+      <option value="nature">Nature</option>
+      <option value="scenery">Scenery</option>
+
+    </select>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>🌈 Background Colour</h3>
+
+    <div class="colorRow">
+
+      <button class="colorBtn"
+        style="background:white"
+        onclick="setBackground('#ffffff')"></button>
+
+      <button class="colorBtn"
+        style="background:black"
+        onclick="setBackground('#000000')"></button>
+
+      <button class="colorBtn"
+        style="background:#1e3a8a"
+        onclick="setBackground('#1e3a8a')"></button>
+
+      <button class="colorBtn"
+        style="background:#374151"
+        onclick="setBackground('#374151')"></button>
+
+      <button class="colorBtn"
+        style="background:#172554"
+        onclick="setBackground('#172554')"></button>
+
+      <button class="colorBtn"
+        style="background:#14532d"
+        onclick="setBackground('#14532d')"></button>
+
+      <button class="colorBtn"
+        style="background:#581c87"
+        onclick="setBackground('#581c87')"></button>
+
+      <button class="colorBtn"
+        style="background:#78350f"
+        onclick="setBackground('#78350f')"></button>
+
+      <button class="colorBtn"
+        style="background:#7f1d1d"
+        onclick="setBackground('#7f1d1d')"></button>
+
+      <button class="colorBtn"
+        style="background:#facc15"
+        onclick="setBackground('#facc15')"></button>
+
+    </div>
+
+    <br>
+
+    <input
+      type="color"
+      id="customColor"
+      onchange="setBackground(this.value)"
+    >
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>💾 Backup</h3>
+
+    <button class="btn full"
+      onclick="exportData()">
+      Export Backup
+    </button>
+
+    <input
+      type="file"
+      id="importFile"
+      accept=".json"
+      onchange="importData(event)"
+    >
+
+  </div>
+
+
+  <div class="card">
+
+    <button class="btn danger full"
+      onclick="resetApp()">
+      Reset Study Forge
+    </button>
+
+  </div>
+
+</section>
+
+</div>
+
+
+<!-- NAV -->
+
+<nav class="bottomNav">
+
+  <button class="navBtn active"
+    onclick="showPage('home',this)">
+    <span>🏠</span>
+    Home
+  </button>
+
+  <button class="navBtn"
+    onclick="showPage('tasks',this)">
+    <span>🎯</span>
+    Tasks
+  </button>
+
+  <button class="navBtn"
+    onclick="showPage('syllabus',this)">
+    <span>📚</span>
+    Syllabus
+  </button>
+
+  <button class="navBtn"
+    onclick="showPage('focus',this)">
+    <span>⏱️</span>
+    Focus
+  </button>
+
+  <button class="navBtn"
+    onclick="showPage('stats',this)">
+    <span>📊</span>
+    Stats
+  </button>
+
+</nav>
+
+
+<script>
+
+/* =========================
+   MOTIVATIONAL QUOTES
+========================= */
+
+const quotes = [
+
+"Small progress every day becomes massive progress.",
+
+"Forge your discipline before exam day.",
+
+"Don't wish for 90%. Build it.",
+
+"One chapter today is one less chapter tomorrow.",
+
+"Focus now. Celebrate later.",
+
+"You don't need motivation. You need momentum.",
+
+"Your future self is watching what you do today.",
+
+"Consistency beats last-minute panic.",
+
+"Study when you feel like it. Study harder when you don't.",
+
+"Dream big. Work quietly.",
+
+"Every question you solve makes you stronger.",
+
+"Your marks are built before the exam hall.",
+
+"Discipline turns ordinary effort into extraordinary results.",
+
+"One focused hour can change your entire day.",
+
+"Don't count the days. Make the days count.",
+
+"Your competition is yesterday's version of you.",
+
+"Start before you're ready.",
+
+"Progress is still progress, even when it feels slow.",
+
+"Make your preparation impossible to ignore.",
+
+"Excuses don't solve questions. Effort does.",
+
+"Be consistent enough to surprise yourself.",
+
+"Today is another chance to get better.",
+
+"Master the basics. Build the future.",
+
+"Hard work becomes confidence.",
+
+"Stay focused. Stay patient. Keep forging.",
+
+"Your goal deserves your attention.",
+
+"Study with purpose, not pressure.",
+
+"Every completed chapter is a victory.",
+
+"Don't wait for the perfect mood.",
+
+"Forge today. Shine tomorrow."
+
+];
+
+
+/* =========================
+   DIFFERENT QUOTE EVERY OPEN
+========================= */
+
+function getOpeningQuote(){
+
+  let queue;
+
+  try{
+    queue =
+      JSON.parse(
+        localStorage.getItem(
+          "studyForgeQuoteQueue"
+        ) || "[]"
+      );
+  }catch(e){
+    queue=[];
+  }
+
+  /*
+    When the queue becomes empty,
+    create a new shuffled quote list.
+  */
+
+  if(
+    !Array.isArray(queue) ||
+    queue.length===0
+  ){
+
+    queue =
+      quotes.map(
+        (_,index)=>index
+      );
+
+    /*
+      Fisher-Yates shuffle
+    */
+
+    for(
+      let i=queue.length-1;
+      i>0;
+      i--
+    ){
+
+      const j =
+        Math.floor(
+          Math.random()*(i+1)
+        );
+
+      [
+        queue[i],
+        queue[j]
+      ] =
+      [
+        queue[j],
+        queue[i]
+      ];
+
+    }
+
+  }
+
+  const index =
+    queue.shift();
+
+  localStorage.setItem(
+    "studyForgeQuoteQueue",
+    JSON.stringify(queue)
+  );
+
+  return quotes[index];
+
+}
+
+
+/* Put a different quote on splash */
+
+document.getElementById(
+  "splashQuote"
+).textContent =
+  getOpeningQuote();
+
+
+/* =========================
+   DATA
+========================= */
+
+const defaultSyllabus = {
+
+  "Maths 1":[
+    "Linear Equations",
+    "Quadratic Equations",
+    "Arithmetic Progression",
+    "Financial Planning"
+  ],
+
+  "Maths 2":[
+    "Similarity",
+    "Pythagoras Theorem",
+    "Circle",
+    "Coordinate Geometry"
+  ],
+
+  "Science 1":[
+    "Gravitation",
+    "Periodic Classification",
+    "Chemical Reactions",
+    "Effects of Electric Current"
+  ],
+
+  "Science 2":[
+    "Heredity and Evolution",
+    "Life Processes",
+    "Environmental Management",
+    "Green Energy"
+  ],
+
+  "Geography":[
+    "Field Visit",
+    "Location and Extent",
+    "Physiography and Drainage",
+    "Climate"
+  ],
+
+  "History & Political Science":[
+    "Historiography",
+    "Applied History",
+    "Indian Arts",
+    "Working of Constitution"
+  ],
+
+  "English":[
+    "Grammar",
+    "Writing Skills",
+    "Reading Skills"
+  ],
+
+  "Hindi":[
+    "Grammar",
+    "Writing Skills",
+    "Literature"
+  ],
+
+  "Marathi":[
+    "Grammar",
+    "Writing Skills",
+    "Literature"
+  ]
+
+};
+
+
+let data;
+
+try{
+
+  data =
+    JSON.parse(
+      localStorage.getItem(
+        "studyForgeMax"
+      ) || "null"
+    );
+
+}catch(e){
+
+  data=null;
+
+}
+
+
+if(!data){
+
+  data={
+
+    username:"Student",
+
+    avatar:"",
+
+    examName:
+      "Maharashtra SSC Board Exam",
+
+    examDate:"2027-03-01",
+
+    theme:"forge",
+
+    background:"#090b10",
+
+    tasks:[],
+
+    xp:0,
+
+    syllabus:
+      JSON.parse(
+        JSON.stringify(
+          defaultSyllabus
+        )
+      ),
+
+    completed:{}
+
+  };
+
+}
+
+
+function save(){
+
+  localStorage.setItem(
+    "studyForgeMax",
+    JSON.stringify(data)
+  );
+
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+function showPage(
+  page,
+  button=null
+){
+
+  document
+    .querySelectorAll(".page")
+    .forEach(
+      p=>p.classList.remove(
+        "active"
+      )
+    );
+
+  document
+    .getElementById(page)
+    .classList.add("active");
+
+  document
+    .querySelectorAll(".navBtn")
+    .forEach(
+      b=>b.classList.remove(
+        "active"
+      )
+    );
+
+  if(button){
+    button.classList.add(
+      "active"
+    );
+  }
+
+  render();
+
+}
+
+
+/* =========================
+   TASKS
+========================= */
+
+function addTask(){
+
+  const input =
+    document.getElementById(
+      "taskInput"
+    );
+
+  const text =
+    input.value.trim();
+
+  if(!text)return;
+
+  data.tasks.push({
+
+    text:text,
+
+    done:false
+
+  });
+
+  data.xp += 5;
+
+  input.value="";
+
+  save();
+
+  render();
+
+}
+
+
+function toggleTask(index){
+
+  const task =
+    data.tasks[index];
+
+  task.done =
+    !task.done;
+
+  if(task.done)
+    data.xp += 10;
+  else
+    data.xp =
+      Math.max(
+        0,
+        data.xp-10
+      );
+
+  save();
+
+  render();
+
+}
+
+
+/* =========================
+   SYLLABUS
+========================= */
+
+function toggleChapter(
+  subject,
+  chapter
+){
+
+  const key =
+    subject+"::"+chapter;
+
+  data.completed[key] =
+    !data.completed[key];
+
+  if(data.completed[key])
+    data.xp += 20;
+  else
+    data.xp =
+      Math.max(
+        0,
+        data.xp-20
+      );
+
+  save();
+
+  render();
+
+}
+
+
+function addSubject(){
+
+  const name =
+    prompt(
+      "Enter subject name:"
+    );
+
+  if(!name)return;
+
+  if(data.syllabus[name]){
+
+    alert(
+      "This subject already exists."
+    );
+
+    return;
+
+  }
+
+  data.syllabus[name]=[];
+
+  save();
+
+  render();
+
+}
+
+
+function addChapter(subject){
+
+  const chapter =
+    prompt(
+      "Enter chapter name:"
+    );
+
+  if(!chapter)return;
+
+  data.syllabus[
+    subject
+  ].push(chapter);
+
+  save();
+
+  render();
+
+}
+
+
+function deleteSubject(subject){
+
+  if(
+    !confirm(
+      "Delete "+subject+"?"
+    )
+  )return;
+
+  delete data.syllabus[
+    subject
+  ];
+
+  save();
+
+  render();
+
+}
+
+
+/* =========================
+   TIMER
+========================= */
+
+let timerSeconds=1500;
+
+let timerInterval=null;
+
+
+function updateTimer(){
+
+  const min =
+    Math.floor(
+      timerSeconds/60
+    )
+    .toString()
+    .padStart(2,"0");
+
+  const sec =
+    (timerSeconds%60)
+    .toString()
+    .padStart(2,"0");
+
+  document.getElementById(
+    "timerDisplay"
+  ).textContent =
+    min+":"+sec;
+
+}
+
+
+function setTimer(minutes){
+
+  pauseTimer();
+
+  timerSeconds =
+    minutes*60;
+
+  updateTimer();
+
+}
+
+
+function startTimer(){
+
+  if(timerInterval)
+    return;
+
+  timerInterval =
+  
